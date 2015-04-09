@@ -1,0 +1,47 @@
+package com.example.guestbook;
+
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.io.*;
+import java.lang.*;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.json.*;
+
+public class postCommentSession extends HttpServlet {
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
+		  
+	  StringBuffer jb = new StringBuffer();
+	  String line = null;
+	  try {
+		BufferedReader reader = req.getReader();
+		while ((line = reader.readLine()) != null)
+		  jb.append(line);
+	  } catch (Exception e) { /*report an error*/ }
+
+	  try {
+		  //int a = 1;//("hi\n");
+		JSONObject jsonObject =  getJSONObject(jb.toString());
+	  } catch (ParseException e) {
+		// crash and burn
+		throw new IOException("Error parsing JSON request string");
+	  }
+	//Iterator it = jObj.keys(); //gets all the keys
+
+	//while(it.hasNext())
+	//{
+	//	String key = it.next(); // get key
+	//	Object o = jObj.get(key); // get value
+	//	session.putValue(key, o); // store in session
+	//}
+    }
+}

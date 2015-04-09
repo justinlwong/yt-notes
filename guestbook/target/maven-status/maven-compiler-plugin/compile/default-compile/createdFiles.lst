@@ -1,0 +1,3 @@
+com\example\guestbook\postCommentSession.class
+com\example\guestbook\GuestbookServlet.class
+com\example\guestbook\SignGuestbookServlet.class

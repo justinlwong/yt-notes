@@ -1,0 +1,30 @@
+package com.example.guestbook;
+
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
+
+public class postCommentSession extends HttpServlet {
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
+		  
+	/*JSONObject jObj = new JSONObject(request.getParameter("mydata")); // this parses the json
+	Iterator it = jObj.keys(); //gets all the keys
+
+	while(it.hasNext())
+	{
+		String key = it.next(); // get key
+		Object o = jObj.get(key); // get value
+		session.putValue(key, o); // store in session
+	}*/
+    }
+}
