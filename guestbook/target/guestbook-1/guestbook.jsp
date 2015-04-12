@@ -4,7 +4,7 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="com.example.guestbook.Greeting" %>
+<%@ page import="com.example.guestbook.NoteSet" %>
 <%@ page import="com.example.guestbook.Guestbook" %>
 <%@ page import="com.googlecode.objectify.Key" %>
 <%@ page import="com.googlecode.objectify.ObjectifyService" %>
@@ -36,6 +36,9 @@
     User user = userService.getCurrentUser();
     if (user != null) {
         pageContext.setAttribute("user", user);
+		pageContext.setAttribute("guestbookName", user.getEmail());
+		guestbookName = user.getEmail();
+		
 %>
 
 <p>Hello, ${fn:escapeXml(user.nickname)}! (You can
@@ -45,26 +48,22 @@
 %>
 <p>Hello!
     <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
-    to include your name with greetings you post.</p>
+    to include your name with notes you post.</p>
 <%
     }
-%>
-
-<%
+	
     // Create the correct Ancestor key
       Key<Guestbook> theBook = Key.create(Guestbook.class, guestbookName);
-
     // Run an ancestor query to ensure we see the most up-to-date
-    // view of the Greetings belonging to the selected Guestbook.
-      List<Greeting> greetings = ObjectifyService.ofy()
+    // view of the Notes belonging to the selected Guestbook.
+      List<NoteSet> notes = ObjectifyService.ofy()
           .load()
-          .type(Greeting.class) // We want only Greetings
+          .type(NoteSet.class) // We want only notes
           .ancestor(theBook)    // Anyone in this book
-          .order("-date")       // Most recent first - date is indexed.
           .limit(5)             // Only show 5 of them.
           .list();
 
-    if (greetings.isEmpty()) {
+    if (notes.isEmpty()) {
 %>
 <p>Guestbook '${fn:escapeXml(guestbookName)}' has no messages.</p>
 <%
@@ -72,38 +71,17 @@
 %>
 <p>Messages in Guestbook '${fn:escapeXml(guestbookName)}'.</p>
 <%
-      // Look at all of our greetings
-        for (Greeting greeting : greetings) {
-            pageContext.setAttribute("greeting_content", greeting.content);
-            String author;
-            if (greeting.author_email == null) {
-                author = "An anonymous person";
-            } else {
-                author = greeting.author_email;
-                String author_id = greeting.author_id;
-                if (user != null && user.getUserId().equals(author_id)) {
-                    author += " (You)";
-                }
-            }
-            pageContext.setAttribute("greeting_user", author);
+      // Look at all of our notes
+        for (NoteSet note : notes) {
+            pageContext.setAttribute("note_content", note.commentContentList.get(0));
+            pageContext.setAttribute("note_youtubeID", note.youtubeID);
 %>
-<p><b>${fn:escapeXml(greeting_user)}</b> wrote:</p>
-<blockquote>${fn:escapeXml(greeting_content)}</blockquote>
+<p><b>${fn:escapeXml(note_youtubeID)}</b> :</p>
+<blockquote>${fn:escapeXml(note_content)}</blockquote>
 <%
         }
     }
 %>
-
-<form action="/sign" method="post">
-    <div><textarea name="content" rows="3" cols="60"></textarea></div>
-    <div><input type="submit" value="Post Greeting"/></div>
-    <input type="hidden" name="guestbookName" value="${fn:escapeXml(guestbookName)}"/>
-</form>
-
-<form action="/guestbook.jsp" method="get">
-    <div><input type="text" name="guestbookName" value="${fn:escapeXml(guestbookName)}"/></div>
-    <div><input type="submit" value="Switch Guestbook"/></div>
-</form>
 
 <form action="/guestbook.jsp" method="get">
     <div><input id="link" type="text" name="youtubeLink" value="${fn:escapeXml(youtubeLink)}"/></div>

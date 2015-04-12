@@ -27,16 +27,16 @@ public class SignGuestbookServlet extends HttpServlet {
     Key guestbookKey = KeyFactory.createKey("Guestbook", guestbookName);
     String content = req.getParameter("content");
     Date date = new Date();
-    Entity greeting = new Entity("Greeting", guestbookKey);
+    Entity notes = new Entity("NoteSet", guestbookKey);
     if (user != null) {
-      greeting.setProperty("author_id", user.getUserId());
-      greeting.setProperty("author_email", user.getEmail());
+      notes.setProperty("author_id", user.getUserId());
+      notes.setProperty("author_email", user.getEmail());
     }
-    greeting.setProperty("date", date);
-    greeting.setProperty("content", content);
+    notes.setProperty("date", date);
+    notes.setProperty("content", content);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(greeting);
+    datastore.put(notes);
 
     resp.sendRedirect("/guestbook.jsp?guestbookName=" + guestbookName);
   }

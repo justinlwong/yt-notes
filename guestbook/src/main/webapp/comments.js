@@ -8,7 +8,7 @@ $( document ).ready(function() {
 			second = '0' + second
 		}
 		var commentContent = minute + ':' + second + ' ' + $("#comment").val();
-		$("#commentList").append("<div>"+commentContent+"</div>");
+		$("#commentList").append("<div timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"'>"+commentContent+"</div>");
 		// clear commentbox
 		$("#comment").val("");
 	});
@@ -22,7 +22,11 @@ $( document ).ready(function() {
 	$("#commentSave").click(function() {
 		var commentArray = [];
 		$("#commentList").children().each(function(){
-			commentArray.push(this.innerHTML)
+			var commentObj = new Object();
+			var $input = $( this );
+			commentObj.timestamp = $input.attr("timestamp");
+			commentObj.content = $input.attr("content");
+			commentArray.push(commentObj);
 		});
 
 		var commArrayObj = new Object();
