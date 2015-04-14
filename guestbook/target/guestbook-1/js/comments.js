@@ -5,10 +5,11 @@ $( document ).ready(function() {
 		var second = $("#timestamp").val() % 60;
 		if (second < 10)
 		{
-			second = '0' + second
+			second = '0' + second;
 		}
-		var commentContent = minute + ':' + second + ' ' + $("#comment").val();
-		$("#commentList").append("<div timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"'>"+commentContent+"</div>");
+		var time = minute + ':' + second;
+		var content = ' ' + $("#comment").val();
+		$("#commentList").append("<div class='commentDiv' timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"'><a>"+time+"</a>"+content+"</div>");
 		// clear commentbox
 		$("#comment").val("");
 	});
@@ -34,14 +35,18 @@ $( document ).ready(function() {
 		commArrayObj.commentList = commentArray;
 		var fullString = JSON.stringify(commArrayObj);
 		
-		alert(fullString);
+		//alert(fullString);
 		// do post
 		$.post('/postCommentSession', fullString )
 		 .done(function(data) {
-			 alert("POST RESPONDED!");
+			 alert("Comments Saved!");
 		});
 	});
 		
-
+	$('#commentList').on('click', '.commentDiv', function() {
+		//alert("hi");
+		var $input = $( this );
+		player.seekTo(parseInt($input.attr("timestamp")));
+	});
 		
 });

@@ -9,15 +9,22 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 //    after the API code downloads.
 var player;
 function onYouTubeIframeAPIReady() {
-player = new YT.Player('player', {
-  height: '390',
-  width: '640',
-  videoId: $("#link").val(),
-  events: {
-	'onReady': onPlayerReady,
-    'onStateChange': onPlayerStateChange
-  }
-});
+	
+	var video_id = $("#link").val().split('v=')[1];
+	var ampersandPosition = video_id.indexOf('&');
+	if(ampersandPosition != -1) {
+	  video_id = video_id.substring(0, ampersandPosition);
+	}
+
+	player = new YT.Player('player', {
+	  height: '390',
+	  width: '640',
+	  videoId: video_id,
+	  events: {
+		'onReady': onPlayerReady,
+		'onStateChange': onPlayerStateChange
+	  }
+	});
 }
 
 // 4. The API will call this function when the video player is ready.
@@ -36,5 +43,7 @@ function updateTime() {
 	$("#timestamp").val(Math.round(time));
     setTimeout(updateTime, 1000);
 }
+
+
 
 

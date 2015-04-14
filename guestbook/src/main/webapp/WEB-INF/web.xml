@@ -14,6 +14,26 @@
         <servlet-name>postCommentSession</servlet-name>
         <servlet-class>com.example.guestbook.postCommentSession</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>getCommentSessions</servlet-name>
+        <servlet-class>com.example.guestbook.getCommentSessions</servlet-class>
+    </servlet>
+	<servlet>
+	  <servlet-name>xmppreceiver</servlet-name>
+	  <servlet-class>com.example.guestbook.XMPPReceiverServlet</servlet-class>
+	</servlet>
+	<servlet>
+	  <servlet-name>sendMessage</servlet-name>
+	  <servlet-class>com.example.guestbook.sendMessage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>xmppreceiver</servlet-name>
+	  <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>sendMessage</servlet-name>
+	  <url-pattern>/sendMessage</url-pattern>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>sign</servlet-name>
         <url-pattern>/sign</url-pattern>
@@ -26,8 +46,12 @@
         <servlet-name>postCommentSession</servlet-name>
         <url-pattern>/postCommentSession</url-pattern>
     </servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>getCommentSessions</servlet-name>
+        <url-pattern>/getCommentSessions</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
-        <welcome-file>guestbook.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     <filter>
       <filter-name>ObjectifyFilter</filter-name>

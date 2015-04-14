@@ -50,7 +50,12 @@ public class postCommentSession extends HttpServlet {
 		try {
 			UserService userService = UserServiceFactory.getUserService();
 			User user = userService.getCurrentUser();
-            Key guestbookKey = KeyFactory.createKey("Guestbook", user.getEmail());			
+            String email = "default";
+			if (user != null)
+			{
+				email = user.getEmail();				
+			}
+            Key guestbookKey = KeyFactory.createKey("Guestbook", email);			
             Entity notes = new Entity("NoteSet", guestbookKey);
 			id = jsonObject.getString("youtubeID");
 			notes.setProperty("youtubeID", id);
@@ -66,9 +71,11 @@ public class postCommentSession extends HttpServlet {
 			}
 			notes.setProperty("commentTimeList", commentTimestampList);
 			notes.setProperty("commentContentList", commentContentList);
+			out.println(notes.getKey().getId());
+			out.println(notes.getProperty("youtubeID"));
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			datastore.put(notes);
-			out.println(id);
+
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

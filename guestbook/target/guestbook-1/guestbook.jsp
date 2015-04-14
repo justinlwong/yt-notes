@@ -22,7 +22,7 @@
 <%
     String youtubeLink = request.getParameter("youtubeLink");
     if (youtubeLink == null) {
-        youtubeLink  = "dQw4w9WgXcQ";
+        youtubeLink  = "EH_k_1Ah4gk";
     }
     pageContext.setAttribute("youtubeLink", youtubeLink);
 	
