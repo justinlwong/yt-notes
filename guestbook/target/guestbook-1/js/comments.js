@@ -3,13 +3,14 @@ $( document ).ready(function() {
 	$("#commentSubmit").click(function() {
 		var minute = Math.floor(Math.round($("#timestamp").val()) / 60);
 		var second = $("#timestamp").val() % 60;
+		var user = $("#userCheck").attr("userNick");
 		if (second < 10)
 		{
 			second = '0' + second;
 		}
 		var time = minute + ':' + second;
 		var content = ' ' + $("#comment").val();
-		$("#commentList").append("<div class='commentDiv' timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"'><a>"+time+"</a>"+content+"</div>");
+		$("#commentList").append("<div class='row' timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"' user='"+user+"'><div class='timePart'><a>"+time+"</a></div><div class='commentPart'>"+content+"</div><div class='userPart'>("+user+")</div></div>");
 		// clear commentbox
 		$("#comment").val("");
 	});
@@ -27,11 +28,13 @@ $( document ).ready(function() {
 			var $input = $( this );
 			commentObj.timestamp = $input.attr("timestamp");
 			commentObj.content = $input.attr("content");
+			commentObj.user = $input.attr("user");
 			commentArray.push(commentObj);
 		});
 
 		var commArrayObj = new Object();
 		commArrayObj.youtubeID = $("#link").val();
+		commArrayObj.sessionId = $("#sessionCheck").attr("sessionId");
 		commArrayObj.commentList = commentArray;
 		var fullString = JSON.stringify(commArrayObj);
 		
@@ -39,14 +42,20 @@ $( document ).ready(function() {
 		// do post
 		$.post('/postCommentSession', fullString )
 		 .done(function(data) {
-			 alert("Comments Saved!");
+			 //alert("Comments Saved!");
+			 // only refresh the first time
+			 if (commArrayObj.sessionId != data.sessionId)
+			 {
+				 alert("First save, created new session!");
+			     window.location.replace("/index.jsp?youtubeLink="+commArrayObj.youtubeID+"&sessionId="+data.sessionId);
+			 }
 		});
 	});
 		
-	$('#commentList').on('click', '.commentDiv', function() {
+	$('#commentList').on('click', '.timePart', function() {
 		//alert("hi");
 		var $input = $( this );
-		player.seekTo(parseInt($input.attr("timestamp")));
+		player.seekTo(parseInt($input.parent().attr("timestamp")));
 	});
 		
 });

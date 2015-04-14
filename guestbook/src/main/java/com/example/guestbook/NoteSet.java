@@ -29,6 +29,7 @@ public class NoteSet{
   @Id public Long id;
 
   public String content;
+  public List<String> commentAuthorList;
   public List<Integer> commentTimeList;
   public List<String> commentContentList;
   public String youtubeID;

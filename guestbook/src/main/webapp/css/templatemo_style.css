@@ -67,6 +67,18 @@ textarea {
 	margin-bottom: 40px;
 }
 
+.commentPart, .timePart, .userPart
+{
+	display:inline-block;
+}
+
+.commentPart
+{
+	margin: 0px 9px;
+}
+
+
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */

@@ -29,21 +29,22 @@ public class getCommentSessions extends HttpServlet {
 		
 			UserService userService = UserServiceFactory.getUserService();
 			User user = userService.getCurrentUser();
-            String email = "default";
+            String key = "default";
+			String nickname = "Guest";
 			if (user != null)
 			{
-				email = user.getEmail();				
+				nickname = user.getNickname();				
 			}
 			
 			// Create the correct Ancestor key
-			  Key<Guestbook> theBook = Key.create(Guestbook.class, email);
+			  Key<Guestbook> theBook = Key.create(Guestbook.class, key);
 			// Run an ancestor query to ensure we see the most up-to-date
 			// view of the Notes belonging to the selected Guestbook.
 			  List<NoteSet> notes = ObjectifyService.ofy()
 				  .load()
 				  .type(NoteSet.class) // We want only notes
 				  .ancestor(theBook)    // Anyone in this book
-				  .limit(10)             // Only show 5 of them.
+				  //.limit(10)             // Only show 5 of them.
 				  .list();		
 			
 
@@ -53,17 +54,19 @@ public class getCommentSessions extends HttpServlet {
 			int count = 0;
 			for (NoteSet note : notes) {
 				try {
-					JSONObject jsonSession = new JSONObject();
-					jsonSession.put("youtubeID", note.youtubeID);
-					jsonSession.put("sessionId", note.id);
-					jsonArr.put(count, jsonSession);
+					// only load ones they contributed to
+					if (note.commentAuthorList.contains(nickname))
+					{
+						JSONObject jsonSession = new JSONObject();
+						jsonSession.put("youtubeID", note.youtubeID);
+						jsonSession.put("sessionId", note.id);
+						jsonArr.put(count, jsonSession);
+						count ++;
+					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 				}
 
-				count ++;
-				//pageContext.setAttribute("note_content", note.commentContentList.get(0));
-				//pageContext.setAttribute("note_youtubeID", note.youtubeID);
 			}     
 			
 			try {			

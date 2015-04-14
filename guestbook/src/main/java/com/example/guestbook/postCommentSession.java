@@ -3,11 +3,14 @@ package com.example.guestbook;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+// import com.google.appengine.api.datastore.DatastoreService;
+// import com.google.appengine.api.datastore.DatastoreServiceFactory;
+// import com.google.appengine.api.datastore.Entity;
+// import com.google.appengine.api.datastore.Key;
+// import com.google.appengine.api.datastore.KeyFactory;
+
+import com.googlecode.objectify.Key;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -47,44 +50,79 @@ public class postCommentSession extends HttpServlet {
 		}
         String id = null;
 		String comments = null;
+		long returnId = -1;
 		try {
-			UserService userService = UserServiceFactory.getUserService();
-			User user = userService.getCurrentUser();
-            String email = "default";
-			if (user != null)
+
+            String key = "default";
+
+			// if sessionId isn't -1, we simply retrieve and overwrite entry in database
+			Long sessionId = jsonObject.getLong("sessionId");
+			out.println("INPUT SESSION ID : " + String.valueOf(sessionId));											
+			Key<Guestbook> theBook = Key.create(Guestbook.class, key);			
+			
+            //Key guestbookKey = KeyFactory.createKey("Guestbook", key);			
+            //Entity notes = new Entity("NoteSet", guestbookKey);
+			NoteSet notes = null;
+			if (sessionId != -1)
 			{
-				email = user.getEmail();				
+				List<NoteSet> noteList = ofy()
+					  .load()
+					  .type(NoteSet.class) // We want only notes
+					  .ancestor(theBook)    // Anyone in this book
+					  .list();
+
+				for (NoteSet curnote : noteList) {
+					out.println("CURNOTE ID: " + curnote.id);
+					if ((long)curnote.id == (long)sessionId)
+					{
+						notes = curnote;					
+					}
+				}
+		
+			} 
+			
+			if (notes == null)
+			{
+				out.println("no match");
+				notes = new NoteSet();
+			    notes.theBook = theBook;
 			}
-            Key guestbookKey = KeyFactory.createKey("Guestbook", email);			
-            Entity notes = new Entity("NoteSet", guestbookKey);
+			
 			id = jsonObject.getString("youtubeID");
-			notes.setProperty("youtubeID", id);
+			notes.youtubeID = id;
+			//notes.setProperty("youtubeID", id);
 			comments = jsonObject.getString("commentList");
 			JSONArray arr = new JSONArray(comments);
 			List<Integer> commentTimestampList = new ArrayList<Integer>();
 			List<String> commentContentList = new ArrayList<String>();
+			List<String> commentAuthorList = new ArrayList<String>();
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject comment = new JSONObject(arr.getString(i));
                 commentTimestampList.add(comment.getInt("timestamp"));
-                commentContentList.add(comment.getString("content"));				
+                commentContentList.add(comment.getString("content"));		
+                commentAuthorList.add(comment.getString("user"));				
 				
 			}
-			notes.setProperty("commentTimeList", commentTimestampList);
-			notes.setProperty("commentContentList", commentContentList);
-			out.println(notes.getKey().getId());
-			out.println(notes.getProperty("youtubeID"));
-			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-			datastore.put(notes);
+			notes.commentTimeList = commentTimestampList;
+			notes.commentContentList = commentContentList;
+			notes.commentAuthorList = commentAuthorList;
 
+            ofy().save().entity(notes).now();
+		    returnId = (long)notes.id;
+			
+				  
+			resp.setContentType("application/json");
+			JSONObject sid = new JSONObject();
+			sid.put("sessionId", String.valueOf(returnId));
+			PrintWriter out = resp.getWriter();
+			out.write(sid.toString());		
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-	  
-        resp.setContentType("text/html");
-		resp.setStatus(resp.SC_OK);
+
    
 	  
 	  

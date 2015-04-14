@@ -91,27 +91,27 @@
 											}
 											pageContext.setAttribute("youtubeLink", youtubeLink);
 											
-											String guestbookName = request.getParameter("guestbookName");
-											if (guestbookName == null) {
-												guestbookName = "default";
-											}
-											pageContext.setAttribute("guestbookName", guestbookName);
+											//String guestbookName = request.getParameter("guestbookName");
+											//if (guestbookName == null) {
+											//	guestbookName = "default";
+											//}
+											//pageContext.setAttribute("guestbookName", guestbookName);
 											
 											UserService userService = UserServiceFactory.getUserService();
 											User user = userService.getCurrentUser();
 											if (user != null) {
 												pageContext.setAttribute("user", user);
-												pageContext.setAttribute("guestbookName", user.getEmail());
-												guestbookName = user.getEmail();
+												//pageContext.setAttribute("guestbookName", user.getEmail());
+												//guestbookName = user.getEmail();
 												
 										%>
 
-										<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
+										<p id="userCheck" userNick="${fn:escapeXml(user.nickname)}">Hello, ${fn:escapeXml(user.nickname)}! (You can
 											<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
 										<%
 										} else {
 										%>
-										<p>Hello!
+										<p  id="userCheck" userNick="Guest">Hello!
 											<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
 											to include your name with notes you post.</p>
 										<%
@@ -146,22 +146,20 @@
 										
 										if (sessionId != null )
 										{
+											pageContext.setAttribute("sessionId", sessionId);
+			
+											String guestKey = "default";
+											//if (user != null)
+											//{
+											//	email = user.getEmail();				
+											//}
 											
-
-											String email = "default";
-											if (user != null)
-											{
-												email = user.getEmail();				
-											}
-											
-											Key<Guestbook> theBook = Key.create(Guestbook.class, email);	
+											Key<Guestbook> theBook = Key.create(Guestbook.class, guestKey);	
 											List<NoteSet> notes = ObjectifyService.ofy()
 												  .load()
 												  .type(NoteSet.class) // We want only notes
 												  .ancestor(theBook)    // Anyone in this book
                                                   .list();
-												  
-										    String targetId = "";
 											
 											NoteSet curNote = null;
 
@@ -185,15 +183,25 @@
 													}
 													String time = minuteString + ":" + secondString;
 													String content = " " + curComment;
+													String userNick = curNote.commentAuthorList.get(i);
 							
 										%>
-										<div class='commentDiv' timestamp='<%=String.valueOf(curTime)%>' content='<%=curComment%>'><a><%=time%></a><%=content%></div>
+										<div class='row' timestamp='<%=String.valueOf(curTime)%>' content='<%=curComment%>' user='<%=userNick%>'><div class='timePart'><a><%=time%></a></div><div class='commentPart'><%=content%></div><div class='userPart'>(<%=userNick%>)</div></div>
 										<%
 												}
 											}
+										%>
+										</div>
+										<div id="sessionCheck" sessionId="${fn:escapeXml(sessionId)}"></div>		
+										<%	
+										}
+										else {
+										%>
+										</div>
+										<div id="sessionCheck" sessionId="-1"></div>												
+										<%
 										}
                                     %>									
-								</div>
 								<div><button id="commentSave" type="button">Save Comments</button></div>
 							</div>
 						</div>
