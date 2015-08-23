@@ -1,10 +1,11 @@
 com\example\guestbook\OfyHelper.class
-com\example\guestbook\SignGuestbookServlet.class
-com\example\guestbook\sendMessage.class
+com\example\guestbook\getChat.class
 com\example\guestbook\postCommentSession.class
+com\example\guestbook\postChat.class
 com\example\guestbook\NoteSet.class
 com\example\guestbook\Guestbook.class
+com\example\guestbook\getSessionById.class
 com\example\guestbook\getCommentSessions.class
-com\example\guestbook\XMPPReceiverServlet.class
 com\example\guestbook\GuestbookServlet.class
 com\example\guestbook\Comment.class
+com\example\guestbook\ChatLog.class

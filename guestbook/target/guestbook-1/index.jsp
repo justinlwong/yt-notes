@@ -3,9 +3,11 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Random" %>
 <%@ page import="java.lang.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.example.guestbook.NoteSet" %>
+<%@ page import="com.example.guestbook.ChatLog" %>
 <%@ page import="com.example.guestbook.Guestbook" %>
 <%@ page import="com.googlecode.objectify.Key" %>
 <%@ page import="com.googlecode.objectify.ObjectifyService" %>
@@ -21,10 +23,6 @@
     <title>YT Notes</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- 
-    Circle Template 
-    http://www.templatemo.com/preview/templatemo_410_circle 
-    -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -35,7 +33,6 @@
     <link rel="stylesheet" href="css/templatemo_style.css">
 
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-	<!-- templatemo 410 circle -->
 </head>
 <body>
     <!--[if lt IE 7]>
@@ -62,7 +59,7 @@
                         <ul class="menu">
                             <li><a class="homebutton" href="#">Add Notes</a></li>
                             <li><a class="show-3" href="#">View Notes</a></li>
-                            <!--li><a class="show-5" href="#">Chat</a></li-->
+                            <li><a class="show-5" href="#">Chat</a></li>
 
                         </ul> <!-- /.menu -->
                         <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
@@ -85,11 +82,22 @@
                                 <div class="load-youtube-form">
                                     <div class="row">
 										<%
+																				
 											String youtubeLink = request.getParameter("youtubeLink");
+											String setTab = "0";
 											if (youtubeLink == null) {
-												youtubeLink  = "https://www.youtube.com/watch?v=7Cowwr5oLz4";
+												youtubeLink  = "https://www.youtube.com/watch?v=09R8_2nJtjg";
 											}
 											pageContext.setAttribute("youtubeLink", youtubeLink);
+											
+											String chatYoutubeLink = request.getParameter("chatYoutubeLink");
+											if (chatYoutubeLink == null) {
+												chatYoutubeLink  = "https://www.youtube.com/watch?v=09R8_2nJtjg";
+											} else {
+												setTab = "1";
+											}
+											pageContext.setAttribute("chatYoutubeLink", chatYoutubeLink);
+											
 											
 											//String guestbookName = request.getParameter("guestbookName");
 											//if (guestbookName == null) {
@@ -110,8 +118,11 @@
 											<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
 										<%
 										} else {
+											Random rand = new Random();
+											String randomNum = "Guest-" +  String.valueOf(rand.nextInt(9000)+999);
+											
 										%>
-										<p  id="userCheck" userNick="Guest">Hello!
+										<p  id="userCheck" userNick="<%=randomNum%>">Hello!
 											<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
 											to include your name with notes you post.</p>
 										<%
@@ -192,7 +203,7 @@
 											}
 										%>
 										</div>
-										<div id="sessionCheck" sessionId="${fn:escapeXml(sessionId)}"></div>		
+										<div id="sessionCheck" sessionId="${fn:escapeXml(sessionId)}"></div>									
 										<%	
 										}
 										else {
@@ -202,180 +213,107 @@
 										<%
 										}
                                     %>									
+								<div id="test"></div>
 								<div><button id="commentSave" type="button">Save Comments</button></div>
+								<div class="row">
+									<div id="shareCommentBox">Type a message to save and get link to share comment session!</div>
+								</div>
 							</div>
 						</div>
 					</div> <!-- /.col-md-12 -->
 
-                    <div id="menu-1" class="about content">
-                        <div class="row">
-                            <ul class="tabs">
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab1" class="icon-item">
-                                        <i class="fa fa-umbrella"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab2" class="icon-item">
-                                        <i class="fa fa-camera"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab3" class="icon-item">
-                                        <i class="fa fa-coffee"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                            </ul> <!-- /.tabs -->
-                            <div class="col-md-12 col-sm-12">
-                                <div class="toggle-content text-center" id="tab1">
-                                    <h3>Our History</h3>
-                                    <p>Circle is free responsive website template for you. Please tell your friends about <span class="blue">template</span><span class="green">mo</span> website. Feel free to download, modify and use this template for your websites. You can easily change icons by <a rel="nofollow" href="http://fontawesome.info/font-awesome-icon-world-map/">Font Awesome</a>. Example: <strong>&lt;i class=&quot;fa fa-camera&quot;&gt;&lt;/i&gt;</strong> 
-                                    <br><br>
-                                    Credit goes to <a rel="nofollow" href="http://unsplash.com">Unsplash</a> for photos used in this template. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero, repellat, aspernatur nihil quasi commodi laboriosam cumque est minus minima sit dicta adipisci possimus magnam. Sit, repudiandae, ut, error, voluptates aspernatur inventore quo earum reiciendis dolorum amet perspiciatis adipisci itaque voluptatum iste laboriosam sapiente hic autem blanditiis doloribus nihil.</p>
-                                </div>
 
-                                <div class="toggle-content text-center" id="tab2">
-                                    <h3>What We Do</h3>
-                                    <p>Donec quis orci nisl. Integer euismod lacus nec risus sollicitudin molestie vel semper turpis. In varius imperdiet enim quis iaculis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris ac mauris aliquam magna molestie posuere in id elit. Integer semper metus felis, fringilla congue elit commodo a. Donec eget rutrum libero.
-                                    <br><br>Nunc dui elit, vulputate vitae nunc sed, accumsan condimentum nisl. Vestibulum a dui lectus. Vivamus in justo hendrerit est cursus semper sed id nibh. Donec ut dictum lorem, eu molestie nisi. Quisque vulputate quis leo lobortis fermentum. Ut sit amet consectetur dui, vitae porttitor lectus.</p>
-                                </div>
-
-                                <div class="toggle-content text-center" id="tab3">
-                                    <h3>Our Team</h3>
-                                    <p>Aliquam erat volutpat. Vivamus tempus, nisi varius imperdiet molestie, velit mi feugiat felis, sit amet fringilla mi massa sit amet arcu. Mauris dictum nisl id felis lacinia congue. Aliquam lectus nisi, sodales in lacinia quis, lobortis vel sem. Vestibulum elit nisi, placerat eget auctor ut, dictum at libero.
-                                    <br><br>Proin enim odio, eleifend eget euismod vitae, pharetra sed lacus. Donec at sapien nunc. Mauris vehicula quis diam nec dignissim. Nulla consequat nibh mattis metus sodales, at eleifend tortor tempor. Sed auctor lacus felis. </p>
-                                </div>
-                            </div> <!-- /.col-md-12 -->
-                        </div> <!-- /.row -->
-
-                        <div class="row">
-                            <div class="col-md-4 col-sm-4">
-                                <div class="member-item">
-                                    <div class="thumb">
-                                        <img src="images/team/member-1.jpg" alt="Tracy - Web Designer">
-                                    </div>
-                                    <h4>Tracy</h4>
-                                    <span>Web Designer</span>
-                                </div> <!-- /.member-item -->
-                            </div> <!-- /.col-md-4 -->
-                            <div class="col-md-4 col-sm-4">
-                                <div class="member-item">
-                                    <div class="thumb">
-                                        <img src="images/team/member-2.jpg" alt="Mary - Web Developer">
-                                    </div>
-                                    <h4>Mary</h4>
-                                    <span>Web Developer</span>
-                                </div> <!-- /.member-item -->
-                            </div> <!-- /.col-md-4 -->
-                            <div class="col-md-4 col-sm-4">
-                                <div class="member-item">
-                                    <div class="thumb">
-                                        <img src="images/team/member-3.jpg" alt="Julia - Creative Director">
-                                    </div>
-                                    <h4>Julia</h4>
-                                    <span>Creative Director</span>
-                                </div> <!-- /.member-item -->
-                            </div> <!-- /.col-md-4 -->
-                        </div> <!-- /.row -->
-                    </div> <!-- /.about -->
-
-                    <div id="menu-2" class="services content">
-                        <div class="row">
-                            <ul class="tabs">
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab4" class="icon-item">
-                                        <i class="fa fa-cogs"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab5" class="icon-item">
-                                        <i class="fa fa-leaf"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                                <li class="col-md-4 col-sm-4">
-                                    <a href="#tab6" class="icon-item">
-                                        <i class="fa fa-users"></i>
-                                    </a> <!-- /.icon-item -->
-                                </li>
-                            </ul> <!-- /.tabs -->
-                            <div class="col-md-12 col-sm-12">
-                                <div class="toggle-content text-center" id="tab4">
-                                    <h3>Our Services</h3>
-                                    <p>You can easily change icons by <a rel="nofollow" href="http://fontawesome.info/font-awesome-icon-world-map/">Font Awesome</a>. Example: <strong>&lt;i class=&quot;fa fa-users&quot;&gt;&lt;/i&gt;</strong> In varius eros ac est interdum, quis scelerisque elit semper. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                                    <br><br>Donec mattis enim sit amet nisl faucibus, eu pulvinar nibh facilisis. Aliquam erat volutpat. Vivamus tempus, nisi varius imperdiet molestie, velit mi feugiat felis, sit amet fringilla mi massa sit amet arcu. Mauris dictum nisl id felis lacinia congue. Aliquam lectus nisi, sodales in lacinia quis, lobortis vel sem. Vestibulum elit nisi, placerat eget auctor ut, dictum at libero.</p>
-                                </div>
-
-                                <div class="toggle-content text-center" id="tab5">
-                                    <h3>Our Support</h3>
-                                    <p>Nulla consequat nibh mattis metus sodales, at eleifend tortor tempor. Sed auctor lacus felis. Maecenas auctor enim libero, vel viverra nulla fringilla quis. Sed eget aliquet arcu. Suspendisse ac dignissim nunc, id pretium elit. Nunc id neque vel leo semper gravida non ut enim. Cras sed posuere magna.
-                                    <br><br>Morbi eget ante sed felis tristique interdum. In varius eros ac est interdum, quis scelerisque elit semper. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                                </div>
-
-                                <div class="toggle-content text-center" id="tab6">
-                                    <h3>Testimonials</h3>
-                                    <p>Etiam dictum, quam quis pharetra tincidunt, enim nunc faucibus ipsum, vitae condimentum ligula est eu dui. Sed tincidunt tincidunt sapien non feugiat. Aenean lacinia tempor leo, et euismod ligula porta non. Quisque lectus ante, rutrum eu neque volutpat, euismod lobortis velit. Suspendisse felis risus, tempor ac vehicula eu, volutpat volutpat sem. Donec quis orci nisl. Integer euismod lacus nec risus sollicitudin molestie vel semper turpis.
-                                    <br><br>In varius imperdiet enim quis iaculis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris ac mauris aliquam magna molestie posuere in id elit. Integer semper metus felis, fringilla congue elit commodo a. Donec eget rutrum libero.</p>
-                                </div>
-                            </div> <!-- /.col-md-12 -->
-                        </div> <!-- /.row -->
-                    </div> <!-- /.services -->
 
                     <div id="menu-3" class="gallery content">
                         <div class="row">                           
 						<!-- This will be injected with divs from GET call from datastore -->
                         </div> <!-- /.row -->
                     </div> <!-- /.gallery -->
-
-                    <div id="menu-4" class="contact content">
-                        <div class="row">
-                        	
-                            <div class="col-md-12">
-                                <div class="toggle-content text-center spacing">
-                                    <h3>Contact Us</h3>
-                                    <p>Donec mattis enim sit amet nisl faucibus, eu pulvinar nibh facilisis. Aliquam erat volutpat. Vivamus tempus, nisi varius imperdiet molestie, velit mi feugiat felis, sit amet fringilla mi massa sit amet arcu. Mauris dictum nisl id felis lacinia congue. Aliquam lectus nisi, sodales in lacinia quis, lobortis vel sem.
-                                    <br><br><strong>Address:</strong> 123 Thamine Street, Digital Estate, Yangon 10620, Myanmar
-                                    <br><strong>Email:</strong> info@company.com | <strong>Tel:</strong> 010-020-0340</p>
-                                </div>
-                            </div> <!-- /.col-md-12 -->
-                            
-                            <div class="col-md-12">
-                                <div class="google-map">
-                                </div> <!-- /.google-map -->
-                            </div> <!-- /.col-md-12 -->
-                            
-                            <div class="col-md-12">
-                                <div class="contact-form">
-                                    <div class="row">
-                                    	<form action="#" method="post">
-                                            <fieldset class="col-md-4">
-                                                <input id="name" type="text" name="name" placeholder="Name">
-                                            </fieldset>
-                                            <fieldset class="col-md-4">
-                                                <input type="email" name="email" id="email" placeholder="Email">
-                                            </fieldset>
-                                            <fieldset class="col-md-4">
-                                                <input type="text" name="subject" id="subject" placeholder="Subject">
-                                            </fieldset>
-                                            <fieldset class="col-md-12">
-                                                <textarea name="message" id="message" placeholder="Message"></textarea>
-                                            </fieldset>
-                                            <fieldset class="col-md-12">
-                                                <input type="submit" name="send" value="Send Message" id="submit" class="button">
-                                            </fieldset>
-                                        </form>
-                                    </div> <!-- /.row -->
-                                </div> <!-- /.contact-form -->
-                            </div> <!-- /.col-md-12 -->
-                        </div> <!-- /.row -->
-                    </div> <!-- /.contact -->
 					
                     <div id="menu-5" class="chat content">
-                        <div class="row">
-							<div class="toggle-content text-center" id="ChatContainer">
-								<div><input id="chatBox" type="text"/></div>
-								<div><button id="chatSubmit" type="button">Enter</button></div>
-								<!--div id="player"></div-->                        	
+						<div class="col-md-12">
+							<div class="load-youtube-form">
+								<div class="row">
+									<form action="/index.jsp" method="get">
+											<fieldset class="col-md-4">
+												<input id="chatYoutubeLink" type="text" name="chatYoutubeLink" value="${fn:escapeXml(chatYoutubeLink)}"/>												
+											</fieldset>
+											 <fieldset class="col-md-4">
+												<input type="submit" value="Load Video"/>											
+											</fieldset>
+											 <fieldset class="col-md-4">
+												<input type="submit" value="Reset"/>											
+											</fieldset>
+									</form>
+								</div>
 							</div>
+						</div>
+                        <div class="row">
+							<div class="toggle-content text-center" id="chatDiv">
+								<div id="panel">
+									<div class="panelPartition" id="player2"></div>
+									
+									<div class="panelPartition" id="chatCol">
+										<div id="chatContainer">
+										<%
+
+											String chatSessionId = request.getParameter("chatSessionId");										
+											if (chatSessionId != null )
+											{
+												pageContext.setAttribute("chatSessionId", chatSessionId);
+				
+												String guestKey = "default";
+												
+												Key<Guestbook> theBook = Key.create(Guestbook.class, guestKey);	
+												List<ChatLog> chats = ObjectifyService.ofy()
+													  .load()
+													  .type(ChatLog.class) // We want only chats
+													  .ancestor(theBook)    // Anyone in this book
+													  .list();
+												
+												ChatLog curChat = null;
+
+												for (ChatLog note : chats) {
+													if (note.id == Long.parseLong(chatSessionId))
+														curChat = note;													
+												}
+												if (curChat != null)
+												{
+													for (int i=0; i<curChat.chatContentList.size(); i++)
+													{
+														String curMessage = curChat.chatContentList.get(i);
+														String userNick = curChat.chatAuthorList.get(i);
+								
+											%>
+											<div class="messageDiv" author="<%=userNick%>" message="<%=curMessage%>"><%=userNick%> : <%=curMessage%></div>
+											<%
+													}
+												}
+											%>
+										</div>
+										<div id="chatSessionCheck" chatSessionId="${fn:escapeXml(chatSessionId)}" setTab="<%=setTab%>"></div>									
+										<%	
+											}
+											else {
+										%>
+										</div>
+										<div id="chatSessionCheck" chatSessionId="-1" setTab="<%=setTab%>"></div>												
+									<%
+											}
+                                    %>	
+									<div><input id="chatBox" type="text"/></div>
+									<div><button id="chatSubmit" type="button">Send</button></div>
+									</div>
+
+								</div>
+								<div class="row">
+									<div id="shareChatBox">Type a message to establish a chat session! You will be the owner and can control video synchronization. (Warning: Sharing chat with yourself can cause sync issues.)</div>
+								</div>
+							</div>
+
+							</div>
+								<!--div id="player"></div-->                        	
+							<!--/div-->
                         </div> <!-- /.row -->
                     </div> <!-- /.chat -->
 
@@ -393,8 +331,8 @@
     <script src="js/jquery.easing-1.3.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/loadYoutube.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/comments.js"></script>
     <script type="text/javascript">
             
@@ -410,15 +348,20 @@
                     // Components                           
                     slide_links: 'blank', // Individual links for each slide (Options: false, 'num', 'name', 'blank')
                     slides: [ // Slideshow Images
-                        {
-                            image: 'images/templatemo-slide-1.jpg'
+						{
+                            image: 'images/img6.jpg'
                         }, {
-                            image: 'images/templatemo-slide-2.jpg'
+                            image: 'images/img7.jpg'
+						}, {
+                            image: 'images/img2.jpg'
                         }, {
-                            image: 'images/templatemo-slide-3.jpg'
+                            image: 'images/img3.jpg'
                         }, {
-                            image: 'images/templatemo-slide-4.jpg'
+                            image: 'images/img4.jpg'
+                        }, {
+                            image: 'images/img11.jpg'
                         }
+                        
                     ]
 
                 });

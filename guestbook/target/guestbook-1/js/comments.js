@@ -1,6 +1,7 @@
 // when submit button is pressed, get comment and add a div
 $( document ).ready(function() {
 	$("#commentSubmit").click(function() {
+		comment_sending = 1;
 		var minute = Math.floor(Math.round($("#timestamp").val()) / 60);
 		var second = $("#timestamp").val() % 60;
 		var user = $("#userCheck").attr("userNick");
@@ -9,10 +10,12 @@ $( document ).ready(function() {
 			second = '0' + second;
 		}
 		var time = minute + ':' + second;
-		var content = ' ' + $("#comment").val();
-		$("#commentList").append("<div class='row' timestamp='"+$("#timestamp").val() +"' content='"+$("#comment").val()+"' user='"+user+"'><div class='timePart'><a>"+time+"</a></div><div class='commentPart'>"+content+"</div><div class='userPart'>("+user+")</div></div>");
+		var content = ' ' + $("#comment").val().replace(/'/g, "&quot");
+		var contentmod = $("#comment").val().replace(/'/g, "&quot");
+		$("#commentList").append("<div class='row' timestamp='"+$("#timestamp").val() +"' content='"+contentmod+"' user='"+user+"'><div class='timePart'><a>"+time+"</a></div><div class='commentPart'>"+content+"</div><div class='userPart'>("+user+")</div></div>");
 		// clear commentbox
 		$("#comment").val("");
+	    $("#commentSave").click();
 	});
 	
 	$("#comment").keypress(function(event){
@@ -44,12 +47,14 @@ $( document ).ready(function() {
 		 .done(function(data) {
 			 //alert("Comments Saved!");
 			 // only refresh the first time
-			 if (commArrayObj.sessionId != data.sessionId)
-			 {
-				 alert("First save, created new session!");
-			     window.location.replace("/index.jsp?youtubeLink="+commArrayObj.youtubeID+"&sessionId="+data.sessionId);
-			 }
-		});
+			 $("#sessionCheck").attr("sessionId", data.sessionId);
+			 comment_sending = 0;
+			 //if (commArrayObj.sessionId != data.sessionId)
+			 //{
+			//	 alert("First save, created new session!");
+			//     window.location.replace("/index.jsp?youtubeLink="+commArrayObj.youtubeID+"&sessionId="+data.sessionId);
+			 //}
+		});		
 	});
 		
 	$('#commentList').on('click', '.timePart', function() {

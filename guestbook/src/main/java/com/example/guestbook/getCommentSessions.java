@@ -30,11 +30,13 @@ public class getCommentSessions extends HttpServlet {
 			UserService userService = UserServiceFactory.getUserService();
 			User user = userService.getCurrentUser();
             String key = "default";
-			String nickname = "Guest";
-			if (user != null)
-			{
-				nickname = user.getNickname();				
-			}
+			// String nickname = "Guest";
+			// if (user != null)
+			// {
+				// nickname = user.getNickname();				
+			// }
+			
+			String nickname = req.getParameter("user");
 			
 			// Create the correct Ancestor key
 			  Key<Guestbook> theBook = Key.create(Guestbook.class, key);
@@ -44,6 +46,7 @@ public class getCommentSessions extends HttpServlet {
 				  .load()
 				  .type(NoteSet.class) // We want only notes
 				  .ancestor(theBook)    // Anyone in this book
+				  //.order("-date")
 				  //.limit(10)             // Only show 5 of them.
 				  .list();		
 			
@@ -53,6 +56,7 @@ public class getCommentSessions extends HttpServlet {
 		    JSONArray jsonArr = new JSONArray();
 			int count = 0;
 			for (NoteSet note : notes) {
+				//out.println(note.date.toString());
 				try {
 					// only load ones they contributed to
 					if (note.commentAuthorList.contains(nickname))
@@ -60,6 +64,7 @@ public class getCommentSessions extends HttpServlet {
 						JSONObject jsonSession = new JSONObject();
 						jsonSession.put("youtubeID", note.youtubeID);
 						jsonSession.put("sessionId", note.id);
+						jsonSession.put("date", note.date.toString());
 						jsonArr.put(count, jsonSession);
 						count ++;
 					}

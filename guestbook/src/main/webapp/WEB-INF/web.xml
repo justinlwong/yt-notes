@@ -2,10 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <servlet>
-        <servlet-name>sign</servlet-name>
-        <servlet-class>com.example.guestbook.SignGuestbookServlet</servlet-class>
-    </servlet>
+
     <servlet>
         <servlet-name>guestbook</servlet-name>
         <servlet-class>com.example.guestbook.GuestbookServlet</servlet-class>
@@ -19,25 +16,29 @@
         <servlet-class>com.example.guestbook.getCommentSessions</servlet-class>
     </servlet>
 	<servlet>
-	  <servlet-name>xmppreceiver</servlet-name>
-	  <servlet-class>com.example.guestbook.XMPPReceiverServlet</servlet-class>
+	  <servlet-name>getSessionById</servlet-name>
+	  <servlet-class>com.example.guestbook.getSessionById</servlet-class>
 	</servlet>
 	<servlet>
-	  <servlet-name>sendMessage</servlet-name>
-	  <servlet-class>com.example.guestbook.sendMessage</servlet-class>
+	  <servlet-name>postChat</servlet-name>
+	  <servlet-class>com.example.guestbook.postChat</servlet-class>
+	</servlet>
+	<servlet>
+	  <servlet-name>getChat</servlet-name>
+	  <servlet-class>com.example.guestbook.getChat</servlet-class>
 	</servlet>
 	<servlet-mapping>
-	  <servlet-name>xmppreceiver</servlet-name>
-	  <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
+	  <servlet-name>getSessionById</servlet-name>
+	  <url-pattern>/getSessionById</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-	  <servlet-name>sendMessage</servlet-name>
-	  <url-pattern>/sendMessage</url-pattern>
+	  <servlet-name>postChat</servlet-name>
+	  <url-pattern>/postChat</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sign</servlet-name>
-        <url-pattern>/sign</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>getChat</servlet-name>
+	  <url-pattern>/getChat</url-pattern>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>guestbook</servlet-name>
         <url-pattern>/guestbook</url-pattern>

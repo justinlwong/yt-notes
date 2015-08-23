@@ -77,7 +77,37 @@ textarea {
 	margin: 0px 9px;
 }
 
+.linkInput
+{
+    text-align: center;
+}
 
+.panelPartition
+{
+    padding: 25px;
+}
+
+#chatContainer
+{
+    width: 200px;
+	height: 350px; 
+	overflow-y: scroll;
+}
+
+#player2, #chatCol
+{
+    display:inline-block;
+}
+
+div
+{
+    color: #222;
+}
+
+.messageDiv
+{
+    text-align: left;
+}
 
 /* ==========================================================================
    Helper classes
@@ -526,8 +556,8 @@ ul.tabs {
 
 .g-item span {
     color: white;
-    font-weight: 300;
-    font-size: 60px;
+    font-weight: 200;
+    font-size: 25px;
     height: 60px;
     width: 100%;
     top: 50%;
